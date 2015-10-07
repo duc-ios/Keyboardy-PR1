@@ -14,14 +14,19 @@ class ViewController: UIViewController, KeyboardStateDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        registerForKeyboardNotifications(self)
+        // not necessary here
+//        registerForKeyboardNotifications(self)
     }
     
     override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
         registerForKeyboardNotifications(self)
     }
     
     override func viewDidDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        
         unregisterFromKeyboardNotifications()
     }
 
@@ -34,7 +39,11 @@ class ViewController: UIViewController, KeyboardStateDelegate {
         case .Hidden:
             textFieldBottom.constant = 0
         case .ActiveWithHeight(let height):
-            textFieldBottom.constant = height
+            // view controller's view bottom pinned to other view (tabbar - see screen shot) of parent controller (UITabBarController)
+            // so we should manually shift textFieldBottom to this difference
+            
+            let tabBarHeight = tabBarController?.tabBar.bounds.height ?? 0.0
+            textFieldBottom.constant = height - tabBarHeight
         }
         view.layoutIfNeeded()
     }
